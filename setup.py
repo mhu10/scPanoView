@@ -1,9 +1,9 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='demo101mhu',
     version='0.2',
-    packages=['meanvalue'],
+    packages=find_packages(exclude=['tests*']),
     license='MIT',
     description='An example python package',
     long_description=open('README.md').read(),
