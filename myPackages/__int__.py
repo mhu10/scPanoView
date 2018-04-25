@@ -1,1 +1,1 @@
-from . import somePython
+from myPackages import meanvalue
