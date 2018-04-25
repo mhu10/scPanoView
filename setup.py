@@ -10,5 +10,5 @@ setup(
     install_requires=['numpy'],
     url='https://github.com/mhu10/demo101mhu',
     author='mhu10',
-    author_email='myemail@example.com'
+    author_email='mhu10@jhmi.edu'
 )
