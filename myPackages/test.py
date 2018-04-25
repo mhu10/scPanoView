@@ -1,4 +1,4 @@
-from myPackage import somePython
+from myPackages import somePython
 
 def test_fahrToKelv():
     '''
