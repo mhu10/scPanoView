@@ -1,1 +1,0 @@
-from myPackages import meanvalue
