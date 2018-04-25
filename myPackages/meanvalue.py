@@ -1,6 +1,6 @@
 import numpy as np
 
 def cal_mean(data):
-  
-  return(np.mean(data))
+  answer=np.mean(data)
+  return(answer)
   
