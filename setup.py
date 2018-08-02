@@ -5,7 +5,7 @@ setup(
     version='0.1',
     packages=find_packages(exclude=['tests*']),
     license='MIT',
-    description='An example python package',
+    description='A single-cell clustering algorithm',
     long_description=open('README.md').read(),
     install_requires=['numpy','pandas','scipy','matplotlib','seaborn','scikit-learn','statsmodels'],
     url='https://github.com/mhu10/scPanoView',
