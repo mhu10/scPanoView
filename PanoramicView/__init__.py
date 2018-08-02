@@ -1,1 +1,1 @@
-from PanoramicView import PanoView
+from PanoramicView import scPanoView
