@@ -1,5 +1,5 @@
 # single-cell Panoramic View clustering (PanoView)
-create python package
+A novel clustering for identifying cell subpopulations from single-cell RNAseq
 
 ## installation ##
 
