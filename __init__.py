@@ -1,1 +1,1 @@
-import PanoView
+from scPanoView import PanoView
