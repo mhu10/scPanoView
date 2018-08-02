@@ -854,7 +854,7 @@ class PanoVIEW:
         
         
         plt.savefig('PanoView_result',dpi=300)
-        plt.show()
+        #plt.show()
         
              
         
@@ -921,7 +921,7 @@ class PanoVIEW:
         plt.xticks([])
         plt.yticks([])
         #plt.savefig('Cluster_TSNE',dpi=200)
-        plt.show()
+        #plt.show()
         
         
     def RunVGs(self,ClustLevel):
