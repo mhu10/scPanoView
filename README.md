@@ -1,4 +1,4 @@
-# single-cell Panoromaic View clustering (PanoView)
+# single-cell Panoramic View clustering (PanoView)
 create python package
 
 ## installation ##
