@@ -1,1 +1,3 @@
-from . import PanoViewBeta
+import PanoView
+from PanoView import PanoVIEW
+from PanoView import Panoite 
