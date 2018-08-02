@@ -9,6 +9,6 @@ setup(
     long_description=open('README.md').read(),
     install_requires=['numpy','pandas','scipy','matplotlib','seaborn','scikit-learn','statsmodels'],
     url='https://github.com/mhu10/scPanoView',
-    author='Ming-Wen Hu',
+    author='Ming-Wen Hu & Jiang Qian',
     author_email='mhu10@jhmi.edu'
 )
