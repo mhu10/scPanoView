@@ -16,6 +16,7 @@ from sklearn.manifold import TSNE
 from sklearn.preprocessing import MinMaxScaler
 from sklearn import metrics
 from sklearn.preprocessing import normalize
+import matplotlib as mpl
 from statsmodels.sandbox.stats.multicomp import multipletests
 import matplotlib.gridspec as gridspec
 import glob
@@ -716,7 +717,7 @@ class PanoView:
         plt.savefig('PanoView_output',dpi=300)
 
 
-    def VisCluster(self,clevel,cluster_number):     
+    def VisCluster(self,clevel,cnumber):     
         result=self.cell_membership
         tcoord=self.tsne2d
         
@@ -724,7 +725,7 @@ class PanoView:
         plt.figure(figsize=(10,10))
         if clevel == 1:
             for i in np.unique(np.unique(result.L1Cluster)):
-                if i == cluster_number:
+                if i == cnumber:
                     plt.scatter(tcoord[result[result.L1Cluster ==i].index,0],tcoord[result[result.L1Cluster==i].index,1],color='b',s=40,label=i)
                 else:
                     plt.scatter(tcoord[result[result.L1Cluster ==i].index,0],tcoord[result[result.L1Cluster==i].index,1],color='gray',s=40,label=i)
@@ -733,14 +734,14 @@ class PanoView:
         
         if clevel == 2:
             for i in np.unique(np.unique(result.L2Cluster)):
-                if i == cluster_number:
+                if i == cnumber:
                     plt.scatter(tcoord[result[result.L2Cluster ==i].index,0],tcoord[result[result.L2Cluster==i].index,1],color='b',s=40,label=i)
                 else:
                     plt.scatter(tcoord[result[result.L2Cluster ==i].index,0],tcoord[result[result.L2Cluster==i].index,1],color='gray',s=40,label=i)
             
             plt.legend(loc='upper left', prop={'size':16}, bbox_to_anchor=(0.99,1),ncol=1)
             
-        plt.savefig('cluster_%s.png' % cluster_number,dpi=200)    
+        plt.savefig('cluster_%s.png' % cnumber,dpi=200)    
     
     
     def VisClusterAnno(self,annotation):
