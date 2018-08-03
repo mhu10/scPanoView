@@ -21,45 +21,30 @@ import matplotlib as mpl
 from statsmodels.sandbox.stats.multicomp import multipletests
 import matplotlib.gridspec as gridspec
 import glob
-
 np.random.seed(1)
-##===========================================================================###
-##================= Performing PCA  =========================================###
-##===========================================================================## 
+
 
 def RunPCA(data,n):
-
     pca = PCA(n_components=n)
     pca.fit(data)
     data_trans = pca.transform(data) ### new coordinates after pca transform
     return(data_trans,pca.explained_variance_ratio_)
 
 def ARI(truth,predict):
-    
     labels_true = truth
     labels_pred = predict
-    
     return(metrics.adjusted_rand_score(labels_true, labels_pred))
     
-
-####===========================================================================================================###  
-####============  Select highly variance genes by zscore   =========================== ========================###
-####===========================================================================================================###
-
 def jitter(a_series, noise_reduction=1000000):
     return (np.random.random(len(a_series))*a_series.std()/noise_reduction)-(a_series.std()/(2*noise_reduction))
 
-
-def HighVarGene(data,z,meangene):
-    
-    
+def HighVarGene(data,z,meangene): 
     data=data.transpose()
     data=data.loc[:,(data!=0).any(axis=0)]
     data.loc[:,'average'] = np.mean(data,axis=1)     
     data.loc[:,'genegroup'] = pd.qcut(data.loc[:,'average'] + jitter(data.loc[:,'average']),20,labels=range(1,21)) 
     data.loc[:,'variance']= np.var(data.drop('genegroup',axis = 1),axis=1)
     data.loc[:,'dispersion']= data.drop('genegroup',axis =1).variance/data.drop('genegroup',axis=1).average
-
     pickdf=[]
     for group in range(1,21):
           
@@ -72,33 +57,21 @@ def HighVarGene(data,z,meangene):
             data.loc[data[data.genegroup == group].index,'zscore'] = pd.DataFrame(stats.zscore(data[data.genegroup == group].dispersion)).fillna(0).values
             if len(data[data.zscore>z]) >0:
                 pickdf.append(data[(data.zscore>z)].index)
-        
         if pickdf==[]:      
             return([])    
         else:
-                
              hvg=(np.unique([g for sublist in pickdf for g in sublist]))
-             
              if len(hvg) <3:
                  return([])
              else:
                  return(hvg)
- 
     else:
-        
         hvg=(np.unique([g for sublist in pickdf for g in sublist]))
-    
         if len(hvg) < 3:
-            
             return([])
-    
         else:
             return(hvg)
-            
-            
-
-######## Gini Coefficient ########
-
+        
 def gini(data):
     total=0
     for i in data:
@@ -108,12 +81,8 @@ def gini(data):
     result = total / (2*len(data)*len(data)*np.mean(data))
     return(result)
 
-    
-#################################
-
 
 def Skl_scale(data):
-    ### using sklearn.MinMaxScaler
     newdata = data.copy()
     for i in newdata.index:
         scaler = MinMaxScaler(feature_range=(-2,2))
@@ -122,15 +91,7 @@ def Skl_scale(data):
     return(newdata)
 
 
-
-
-####===========================================================================================================###  
-####============  ordering cell by number of neighbors   =========================== ========================###
-####===========================================================================================================###
-
-
 def OrderCell(data,radius):
-
     tree = BallTree(data,leaf_size=2)    
     Countnumber=[]
     for point in range(len(data)): 
@@ -139,10 +100,8 @@ def OrderCell(data,radius):
     CountnumberDf = pd.DataFrame(Countnumber,columns =['neighbors'])
     return(CountnumberDf)
 
-###================================================================
 
 def Distohull(xcoord,point,clusthull,clusthullvertices):
-    
     disttovertices = [LA.norm(xcoord[i] - xcoord[point]) for i in clusthull.iloc[clusthullvertices,:].index ]
     if np.min(disttovertices) < np.mean(distance.pdist(xcoord[clusthull.iloc[clusthullvertices,:].index])):
        outcheck = 0 # assign to cluster
@@ -152,31 +111,23 @@ def Distohull(xcoord,point,clusthull,clusthullvertices):
         outvalue = 9999999999999
     return(outcheck,outvalue)
 
-###==============================================================
-
-
 
 def Findlocalmax(countdataframe,xcoordinate,bin):
-    
     clusters = []
     newdataframe = countdataframe
     distohighest = [LA.norm(xcoordinate[point] - xcoordinate[np.argmax(newdataframe.neighbors)]) for point in newdataframe.index]
     newdataframe = newdataframe.assign(dist = distohighest)
     hist = np.histogram(distohighest,bin)
     firstclust = newdataframe[newdataframe.dist < hist[1][1]]
-    
     clust_1 = list(firstclust.index)    
     if len(clust_1) < 4:
-            return(False)
-            
+            return(False) 
     hull = ConvexHull(xcoordinate[firstclust.index],qhull_options ='QJ')  
     clusters.append([firstclust,clust_1,hull])
     
     tempclust = newdataframe[newdataframe.dist >= hist[1][1]]
     checkpoint = len(tempclust)    
-     
     while checkpoint > 0:
-        
         checkpoint = 0
         neighbornumber = np.unique(tempclust.neighbors)[::-1]
         newcenter = []
@@ -215,26 +166,23 @@ def Findlocalmax(countdataframe,xcoordinate,bin):
             tempclust = tempclust[tempclust.dist >= hist[1][1]]
             checkpoint = len(tempclust)                        
     return(clusters)
+
+
     
-
-
-
 class Panoite:
      
-    def __init__(self,expression):
-        
+    def __init__(self,expression):       
         self.expression = expression
         self.genespace=[]
         self.membership = pd.DataFrame({'L1Cluster':0},index=list(range(len(self.expression))))
         self.stopite = False
-    def generate_clusters(self,lowgene,zscore):
-        
+    
+    def generate_clusters(self,lowgene,zscore):    
         CellMaximumn=1000
         ginicutoff = 0.05
         Rneighbor= 20
         maxcellibin=20
         maxbb = 20
-        
         findvarg = HighVarGene(self.expression,zscore,lowgene)
         
         if len(findvarg) > 0:
@@ -248,17 +196,13 @@ class Panoite:
         subdf=Skl_scale(subdf)
         pcaspace = RunPCA(subdf.values.astype(float),3)[0]
         Radius = np.histogram(distance.pdist(pcaspace),Rneighbor)[1][1]
-    
         temppca = pcaspace    
         Ordercell = OrderCell(temppca,Radius)
-        
         bb=0
         opt_bins=True
         lm_number = 1
-        
         while opt_bins == True:
-            bb = bb+1
-            
+            bb = bb+1        
             if len(temppca) >CellMaximumn:
                 print('cell > 1000')
                 
@@ -269,10 +213,7 @@ class Panoite:
                 localmax = Findlocalmax(Ordercell,temppca,5*bb)
             
             if localmax == False:
-                    
-                    
-                    if bb == 1:
-                        
+                    if bb == 1:   
                         self.membership.L1Cluster= 1
                         self.CSIZE = len(self.membership)
                         return()             
@@ -281,43 +222,31 @@ class Panoite:
                         opt_bins = False                           
                     
             lm_number_next = len(localmax)
-            
             if bb > maxbb and len(temppca) <CellMaximumn:
                 opt_bins = False
             elif lm_number_next >= lm_number:
                lm_number = lm_number_next
-            
             elif lm_number_next < lm_number and len(temppca) <CellMaximumn :
-                localmax = Findlocalmax(Ordercell,temppca,5*(bb-1))
-                
+                localmax = Findlocalmax(Ordercell,temppca,5*(bb-1))   
                 opt_bins = False
-        
-        
+    
         densepoint = []
         for i in range(len(localmax)):
             densepoint.append(np.argmax(localmax[i][0].neighbors))
-        
-        
-        for j in Ordercell.index:
     
+        for j in Ordercell.index:
             pairdist = distance.cdist([temppca[j]],temppca[densepoint])
             Ordercell.loc[j,'cluster'] = np.argmin(pairdist)+np.max(self.membership.L1Cluster)+1
-        
-                 
+            
         Ordercell.cluster = Ordercell.cluster.astype(int)
-        
-        
         for i in Ordercell.index:
             self.membership.loc[i,'L1Cluster'] = Ordercell.loc[i,'cluster']      
 
-############  eva ########################################
-                  
         Eva=[]
         Cluster_size=[]        
         check_CLN = []
         
         for i in np.unique(Ordercell.cluster):
-            
             Eva.append(np.var(distance.pdist(self.expression.loc[self.membership[self.membership.L1Cluster ==i].index,self.genespace[-1]],'correlation')))
             check_CLN.append(i)
         
@@ -325,10 +254,6 @@ class Panoite:
             Cluster_size.append(len(self.membership[self.membership.L1Cluster == i]))
         
         Eva=pd.DataFrame(Eva,index = check_CLN).fillna(0)
-        
-        
-############  gini ########################################
-        
         tempEva = np.copy(Eva)
         tempEva.sort(axis=0)
         ginivalue = []
@@ -340,7 +265,6 @@ class Panoite:
             if j == 0:
                 pass
             else:
-                   
                 Evalist = tempEva[0:j+1]
                 for i in Evalist:
                     persent = 100*(i / sum(Evalist))
@@ -348,44 +272,35 @@ class Panoite:
                     lorenz.append(accum)
                 ginivalue.append(gini(Evalist))
 
-
         Gini=pd.DataFrame(ginivalue)    
         check_iteation = any(Gini.values > ginicutoff)
         while check_iteation == True:
             
             if all(Gini.values < ginicutoff):
-                
                 check_iteation = False
 
             else:
-
                 clust_pick_auto = list(set(np.unique(Ordercell.cluster)))
                 clust_keep_auto = Eva.idxmin().values
                 clust_pick_auto.remove(clust_keep_auto)
  
- #######################################################33              
-             
             nextdf = self.expression.loc[self.membership[self.membership.L1Cluster.isin(clust_pick_auto)].index,:]
             print(str(round((1-(len(nextdf)/len(self.expression)))*100))+'%')
             findvarg = HighVarGene(nextdf,zscore,lowgene)
             
             if len(findvarg) > 0:
-            
                 self.genespace.append(findvarg)
                 subdf = self.expression.loc[nextdf.index,self.genespace[-1]]
     
             elif len(findvarg) == 0:
-                
                 self.stopite = True
                 return()
      
             subdf=Skl_scale(subdf)
             pcaspace = RunPCA(subdf.values.astype(float),3)[0]
-        
             Radius = np.histogram(distance.pdist(pcaspace),Rneighbor)[1][1]          
             temppca = pcaspace    
             Ordercell = OrderCell(temppca,Radius)
-
             bb=0
             opt_bins=True
             lm_number = 1
@@ -393,7 +308,6 @@ class Panoite:
                 bb = bb+1
                 
                 if len(temppca) >CellMaximumn:
-                    print('cell > 1000')
                     localmax = Findlocalmax(Ordercell,temppca,maxcellibin)
                     opt_bins = False                         
                 else:
@@ -401,23 +315,18 @@ class Panoite:
                 
                 if localmax == False:
                     if bb == 1:
-                        
                         self.membership.loc[nextdf.index,'L1Cluster'] = np.max(self.membership.L1Cluster)+1
                         opt_bins = False
                     else:
                         localmax = Findlocalmax(Ordercell,temppca,5*(bb-1))
                         opt_bins = False                           
                 
-                
                 lm_number_next = len(localmax)
-             
-                
                 if bb > maxbb and len(temppca) <CellMaximumn:
                     opt_bins = False
-            
+
                 elif lm_number_next >= lm_number:
                     lm_number = lm_number_next
-            
                 elif lm_number_next < lm_number and len(temppca) <CellMaximumn:
                     localmax = Findlocalmax(Ordercell,temppca,5*(bb-1))           
                     opt_bins = False                
@@ -434,15 +343,9 @@ class Panoite:
             Ordercell.cluster = Ordercell.cluster.astype(int)
             
             cellid_pick = self.membership[self.membership.L1Cluster.isin(clust_pick_auto)].index
-            
-            
             for i in range(len(cellid_pick)):
-                
                 self.membership.loc[cellid_pick[i],'L1Cluster'] = Ordercell.loc[i,'cluster']               
             
-
-            
-##########################################################################################            
             Eva=[]
             Cluster_size=[]
             check_CLN = [] 
@@ -452,12 +355,10 @@ class Panoite:
             for i in np.unique(Ordercell.cluster):
                 Cluster_size.append(len(self.membership[self.membership.L1Cluster == i]))            
 
-############ plot gini ########################################
             Eva=pd.DataFrame(Eva,index = check_CLN).fillna(0)
             tempEva = np.copy(Eva)
             tempEva.sort(axis=0)
             ginivalue = []
-        
             for j in range(len(Eva)):
                 accum = 0
                 lorenz=[0]
@@ -465,8 +366,7 @@ class Panoite:
                 if j == 0:
 
                    pass        
-                else:
-                   
+                else:     
                    Evalist = tempEva[0:j+1]
                    for i in Evalist:
                        persent = 100*(i / sum(Evalist))
@@ -474,7 +374,6 @@ class Panoite:
                        lorenz.append(accum)
                    ginivalue.append(gini(Evalist))
 
-            
             Gini=pd.DataFrame(ginivalue)
             check_iteation = any(Gini.values > ginicutoff)
  
@@ -482,13 +381,7 @@ class Panoite:
 class PanoView:
      
     def __init__(self,filename):
-        
-        
-        
-        expression=pd.read_csv(filename+'.csv',index_col=0)
-        
-
-        
+        expression=pd.read_csv(filename+'.csv',index_col=0)      
         self.raw_exp = expression
         self.log_exp =[]
         self.cell_id =[]
@@ -505,12 +398,8 @@ class PanoView:
         self.L2cell_dendro_order=[]
         self.L2cluster_color=[]
         
-
         
     def RunPanoView(self,Normal=True,Log2=True,GeneLow='default',Zscore='default'):
-        
-        
-        
         
         self.raw_exp.index.astype(str)
         self.raw_exp.index = self.raw_exp.index.where(~self.raw_exp.index.duplicated(), self.raw_exp.index + '_dp')        
@@ -548,7 +437,6 @@ class PanoView:
         result = Panoite(expression)
         result.generate_clusters(GeneLow,Zscore)
 
-#################################################################
         finalcluster=[]
         VarGene.append(np.unique([gene for sublist in result.genespace for gene in sublist]))
         for i in np.unique(result.membership.L1Cluster):
@@ -556,13 +444,10 @@ class PanoView:
         self.vargene= np.unique([gene for sublist in VarGene for gene in sublist])
         self.cell_clusters = finalcluster
         print("RunPanoView-Done")
-##################################################################
-        
-    
-    
-    def OutputPanoView(self,clust_merge='default',metric_dis='default',fclust_dis= 'default', init='default',n_PCs='default'):    
 
         
+    def OutputPanoView(self,clust_merge='default',metric_dis='default',fclust_dis= 'default', init='default',n_PCs='default'):    
+
         
         if clust_merge != 'default':
             clust_merge=clust_merge;
@@ -588,12 +473,7 @@ class PanoView:
             n_PCs = n_PCs
         else:
             n_PCs = 15
-        
-        
-        
-    
-        
-        
+            
         expression= self.log_exp
         expression.index=range(len(expression))
         expression = Skl_scale(expression)
@@ -702,9 +582,7 @@ class PanoView:
             
         else:
             linkage_matrix = linkage(sim_mat,method="ward")
-     
-        
-        
+       
         dn1=dendrogram(linkage_matrix,distance_sort='descending',leaf_font_size=24,labels=sim_mat.index,color_threshold=0.01,no_plot=True)
     
         dfheat_order=[]
@@ -721,10 +599,7 @@ class PanoView:
         membership.loc[:,'Cell_ID'] = self.cell_id
         self.cell_membership = membership
         dn1_linkage_matrix_dn1=linkage_matrix
-        
-        
-        
-        
+            
         colormaps = sns.color_palette("hls", len(np.unique(self.cell_membership.L1Cluster)))
         cellgroup=[]
         heatcolor = []
@@ -738,9 +613,7 @@ class PanoView:
         self.L1cell_color = heatcolor  
         self.L1cell_dendro_order = [item for sublist in cellgroup for item in sublist]
         self.L1cluster_color=cluster_color
-        
-        
-        
+       
         if fclust_dis != 0.2:
             fclust_dis = fclust_dis;
         
@@ -752,18 +625,11 @@ class PanoView:
         for i in Final_cluster.index:
             self.cell_membership.loc[self.cell_membership[self.cell_membership.L1Cluster ==i].index,'L2Cluster'] = Final_cluster.loc[i,'cluster']
         self.cell_membership.loc[:,'L2Cluster'] =self.cell_membership.loc[:,'L2Cluster'].astype(int)
-            
-        
-        
-        
         self.cell_membership=self.cell_membership[['Cell_ID','L1Cluster','L2Cluster']]
         self.cell_membership.to_csv('Cell_Membership.csv')   
         
-        
-        ##################  output figures ###############
-        
+        sns.set_style(style="white")
         plt.figure(figsize=(18,12))
-        sns.set(style="white")
         gs = gridspec.GridSpec(2, 2)
         gs.update(wspace=0.05)
         
@@ -778,21 +644,13 @@ class PanoView:
         ax1.spines['top'].set_visible(False)
         ax1.spines['right'].set_visible(False)
         ax1.spines['bottom'].set_visible(False)
-        
-        
-        
         plt.axhline(y=fclust_dis, color='gray', linestyle='--',linewidth=1.25)
         
         
-        
-        
-        
-        ### ---------- plot tsne ---------------###
     
         expression=self.log_exp
         result=self.cell_membership
         tsnedata= Skl_scale(expression.loc[:,self.vargene])
-    
         tmodel = TSNE(n_components=2,random_state=1,init=init)
         if n_PCs != 15:
             n_PCs=n_PCs;
@@ -800,9 +658,7 @@ class PanoView:
         tcoord = tmodel.fit_transform(tsnedata)
         self.tsne2d = tcoord
         
-        
-        
-        
+        sns.set_style(style="white")
         ax2 = plt.subplot(gs[0, 1])
         cluster_colors = [i[1] for i in self.L1cluster_color]
         j=0
@@ -825,7 +681,7 @@ class PanoView:
         ax2.spines['top'].set_visible(False)
         ax2.spines['right'].set_visible(False)
         
-
+        sns.set_style(style="white")
         ax3 = plt.subplot(gs[1, 1])
         cluster_colors = sns.color_palette("hls", len(np.unique(result.L2Cluster)))
         l2order = []
@@ -860,21 +716,15 @@ class PanoView:
         plt.yticks([])
         ax3.spines['top'].set_visible(False)
         ax3.spines['right'].set_visible(False)
-        
-        
-        plt.savefig('PanoView_result',dpi=300)
-        
-        
-             
-        
+        plt.savefig('PanoView_output',dpi=300)
 
-    def VisCluster(self,clevel,cluster_number):
-        
+
+    def VisCluster(self,clevel,cluster_number):     
         result=self.cell_membership
         tcoord=self.tsne2d
-        plt.figure(figsize=(10,10))
-        ## marker expression ##############################
         
+        sns.set_style(style="white")
+        plt.figure(figsize=(10,10))
         if clevel == 1:
             for i in np.unique(np.unique(result.L1Cluster)):
                 if i == cluster_number:
@@ -895,34 +745,16 @@ class PanoView:
             
         plt.savefig('cluster_%s.png' % cluster_number,dpi=200)    
     
-    def VisGeneExp(self,genes):
-        
-        
-        ## marker expression ##############################
-        markers=genes
-        markerdata = self.log_exp
-        markerdata = normalize(markerdata,norm='max') ## normalization
-        markerdata=pd.DataFrame(markerdata,index=self.log_exp.index ,columns=self.log_exp.columns)
-        
-        for i in range(len(markers)):
-            plt.figure(figsize=(10, 10))
-            plt.suptitle(markers[i],fontsize=36)
-            plt.scatter(self.tsne2d[:,0],self.tsne2d[:,1],c=markerdata.loc[:,markers[i]],s=40,cmap='BuPu',edgecolor='gray',alpha=0.5)
-            
-            
-            plt.savefig('%s.png' % markers[i],dpi=200)
-        
     
-    def VisClusterUser(self,cluster_inform):
-        
-        cluster_id = np.unique(cluster_inform)
+    def VisClusterAnno(self,annotation):
+        cluster_id = np.unique(annotation)
         tcoord=self.tsne2d
+        sns.set_style(style="white")
         plt.figure(figsize=(16,10))
-        sns.set(style="white")
         cluster_colors = sns.color_palette("hls", len(cluster_id))
         j=0
         for i in cluster_id:
-            plt.scatter(tcoord[cluster_inform[cluster_inform ==i].index,0],tcoord[cluster_inform[cluster_inform==i].index,1],color=cluster_colors[j],s=40,label=i)
+            plt.scatter(tcoord[annotation[annotation ==i].index,0],tcoord[annotation[annotation==i].index,1],color=cluster_colors[j],s=40,label=i)
             j=j+1
         
         plt.legend(prop={'size':14}, bbox_to_anchor=(0.99,1),loc='upper left')
@@ -930,25 +762,37 @@ class PanoView:
         plt.xticks([])
         plt.yticks([])
         plt.savefig('Clusters_Annotation',dpi=200)
+ 
+       
+    def VisGeneExp(self,genes):
+        markers=genes
+        markerdata = self.log_exp
+        markerdata = normalize(markerdata,norm='max') ## normalization
+        markerdata=pd.DataFrame(markerdata,index=self.log_exp.index ,columns=self.log_exp.columns)
         
-        
-        
-    def RunVGs(self,ClustLevel):
-        
+        for i in range(len(markers)):
+            sns.set_style(style="white")
+            plt.figure(figsize=(10, 10))
+            plt.suptitle(markers[i],fontsize=36)
+            plt.scatter(self.tsne2d[:,0],self.tsne2d[:,1],c=markerdata.loc[:,markers[i]],s=40,cmap='BuPu',edgecolor='gray',alpha=0.5)
+            plt.savefig('%s.png' % markers[i],dpi=200)
+            
+
+    def RunVGs(self,clevel):
         pvalue=[]
         logFD=[]
         datafordeg = self.log_exp.loc[:,(self.log_exp!=0).any(axis=0)]
         for i in datafordeg.columns:
             groups=[]
             fdgroups=[]
-            if ClustLevel ==1:
+            if clevel ==1:
                 for j in np.unique(self.cell_membership.L1Cluster):
                     groups.append(datafordeg.loc[self.cell_membership[self.cell_membership.L1Cluster == j].index,i])
                     fdgroups.append(datafordeg.loc[self.cell_membership[self.cell_membership.L1Cluster == j].index,i].mean())
                 if max(fdgroups)-min(fdgroups) >=1:
                     pvalue.append([i,stats.kruskal(*groups)[1]])
                     logFD.append(max(fdgroups)-min(fdgroups))
-            elif ClustLevel ==2:
+            elif clevel ==2:
                 for j in np.unique(self.cell_membership.L2Cluster):
                     groups.append(datafordeg.loc[self.cell_membership[self.cell_membership.L2Cluster == j].index,i])
                     fdgroups.append(datafordeg.loc[self.cell_membership[self.cell_membership.L2Cluster == j].index,i].mean())
@@ -956,7 +800,6 @@ class PanoView:
                     pvalue.append([i,stats.kruskal(*groups)[1]])
                     logFD.append(max(fdgroups)-min(fdgroups))
            
-        
         DEGstat=pd.DataFrame(pvalue,columns=['gene','pvalue']).fillna(1)
         p_value_adj=multipletests(DEGstat.iloc[:,1],alpha=0.05,method='fdr_bh')
         DEGstat.loc[:,'Padj'] = p_value_adj[1]
@@ -965,8 +808,7 @@ class PanoView:
         
     
     def HeatMapVGs(self,pval,number,fd,clevel,genelist=None):
-        
-        
+    
         if clevel ==1:
            cellcolor =self.L1cell_color
            cellorder=self.L1cell_dendro_order
@@ -983,7 +825,8 @@ class PanoView:
         linkage_matrix = linkage(df.T,method='complete')
         dn=dendrogram(linkage_matrix,show_leaf_counts=True,orientation='left',no_plot=True)
         df = df.iloc[:,dn['leaves']]
-        sns.set(style="white")                   
+        
+        sns.set_style(style="white")                  
         FigHeat = plt.figure(figsize=(10,10))
         plt.tight_layout()
         ax = FigHeat.add_subplot(111)
@@ -1001,7 +844,6 @@ class PanoView:
         ax.spines['left'].set_visible(False)
         
         
-        
         axbar = FigHeat.add_axes([0.1, 0.11, 0.02, 0.770])   
         cmap1 = mpl.colors.ListedColormap(cellcolor[::-1])
         cbar=mpl.colorbar.ColorbarBase(axbar,cmap=cmap1, orientation='vertical',ticks=[])
@@ -1009,8 +851,6 @@ class PanoView:
         plt.savefig('HeatmapVGs',dpi=200)
         
         
-
-    
     def HeatMapGenes(self,clevel,genelist):
         
         if clevel ==1:
@@ -1020,15 +860,13 @@ class PanoView:
            cellcolor=self.L2cell_color 
            cellorder=self.L2cell_dendro_order
            
-            
         df = self.log_exp.loc[cellorder,genelist]
-        
         linkage_matrix = linkage(df.T,method='complete')
         dn=dendrogram(linkage_matrix,show_leaf_counts=True,orientation='left',no_plot=True)
         df = df.iloc[:,dn['leaves']]
-        sns.set(style="white")                   
+        
+        sns.set_style(style="white")                   
         FigHeat = plt.figure(figsize=(10,10))
-        plt.tight_layout()
         ax = FigHeat.add_subplot(111)
         cax = ax.matshow(df,aspect='auto',cmap='BuPu')
         cbr=plt.colorbar(cax,fraction=0.02, pad=0.05)
@@ -1047,6 +885,4 @@ class PanoView:
         cmap1 = mpl.colors.ListedColormap(cellcolor[::-1])
         cbar=mpl.colorbar.ColorbarBase(axbar,cmap=cmap1, orientation='vertical',ticks=[])
         cbar.outline.set_visible(False)
-        
         plt.savefig('HeatmapGenes',dpi=200)
-              
