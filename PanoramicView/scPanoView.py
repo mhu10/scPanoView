@@ -246,7 +246,7 @@ class Panoite:
             return()
      
         subdf=Skl_scale(subdf)
-        pcaspace = RunPCA(subdf.as_matrix().astype(float),3)[0]
+        pcaspace = RunPCA(subdf.values.astype(float),3)[0]
         Radius = np.histogram(distance.pdist(pcaspace),Rneighbor)[1][1]
     
         temppca = pcaspace    
@@ -380,7 +380,7 @@ class Panoite:
                 return()
      
             subdf=Skl_scale(subdf)
-            pcaspace = RunPCA(subdf.as_matrix().astype(float),3)[0]
+            pcaspace = RunPCA(subdf.values.astype(float),3)[0]
         
             Radius = np.histogram(distance.pdist(pcaspace),Rneighbor)[1][1]          
             temppca = pcaspace    
@@ -757,7 +757,7 @@ class PanoView:
         
         
         self.cell_membership=self.cell_membership[['Cell_ID','L1Cluster','L2Cluster']]
-        self.cell_membership.to_excel('Cell_Membership.xlsx')   
+        self.cell_membership.to_csv('Cell_Membership.csv')   
         
         
         ##################  output figures ###############
