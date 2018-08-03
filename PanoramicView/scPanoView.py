@@ -672,7 +672,7 @@ class PanoView:
         else:
             ncol=1
             
-        plt.legend(prop={'size':14}, bbox_to_anchor=(0.95,1.05),ncol=ncol,loc='upper left')
+        plt.legend(prop={'size':14}, bbox_to_anchor=(0.95,1.05),ncol=ncol,loc='upper left',frameon=False)
         plt.grid()
         plt.title('L1 Cluster',fontsize=14)
         plt.xticks([])
@@ -708,7 +708,7 @@ class PanoView:
         else:
             ncol=1
             
-        plt.legend(prop={'size':14}, bbox_to_anchor=(0.95,1.05),ncol=ncol,loc='upper left')
+        plt.legend(prop={'size':14}, bbox_to_anchor=(0.95,1.05),ncol=ncol,loc='upper left',frameon=False)
         plt.grid()
         plt.title('L2 Cluster (---)',fontsize=14)
         plt.xticks([])
@@ -731,7 +731,7 @@ class PanoView:
                 else:
                     plt.scatter(tcoord[result[result.L1Cluster ==i].index,0],tcoord[result[result.L1Cluster==i].index,1],color='gray',s=40,label=i)
             
-            plt.legend(loc='upper left', prop={'size':16}, bbox_to_anchor=(0.99,1),ncol=1)
+            plt.legend(loc='upper left', prop={'size':16}, bbox_to_anchor=(0.99,1),ncol=1,frameon=False)
         
         if clevel == 2:
             for i in np.unique(np.unique(result.L2Cluster)):
@@ -740,7 +740,7 @@ class PanoView:
                 else:
                     plt.scatter(tcoord[result[result.L2Cluster ==i].index,0],tcoord[result[result.L2Cluster==i].index,1],color='gray',s=40,label=i)
             
-            plt.legend(loc='upper left', prop={'size':16}, bbox_to_anchor=(0.99,1),ncol=1)
+            plt.legend(loc='upper left', prop={'size':16}, bbox_to_anchor=(0.99,1),ncol=1,frameon=False)
             
         plt.savefig('cluster_%s.png' % cnumber,dpi=200)    
     
@@ -756,7 +756,7 @@ class PanoView:
             plt.scatter(tcoord[annotation[annotation ==i].index,0],tcoord[annotation[annotation==i].index,1],color=cluster_colors[j],s=40,label=i)
             j=j+1
         
-        plt.legend(prop={'size':14}, bbox_to_anchor=(0.99,1),loc='upper left')
+        plt.legend(prop={'size':14}, bbox_to_anchor=(0.99,1),loc='upper left',frameon=False)
         plt.grid()
         plt.xticks([])
         plt.yticks([])
