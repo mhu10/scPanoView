@@ -15,9 +15,7 @@ from sklearn.neighbors import BallTree
 from sklearn.manifold import TSNE
 from sklearn.preprocessing import MinMaxScaler
 from sklearn import metrics
-from collections import Counter
 from sklearn.preprocessing import normalize
-import matplotlib as mpl
 from statsmodels.sandbox.stats.multicomp import multipletests
 import matplotlib.gridspec as gridspec
 import glob
@@ -448,7 +446,6 @@ class PanoView:
         
     def OutputPanoView(self,clust_merge='default',metric_dis='default',fclust_dis= 'default', init='default',n_PCs='default'):    
 
-        
         if clust_merge != 'default':
             clust_merge=clust_merge;
         else:
