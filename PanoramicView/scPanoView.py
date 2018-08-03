@@ -2,7 +2,10 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+import matplotlib.gridspec as gridspec
 from numpy import linalg as LA
+from collections import Counter
 from scipy.spatial import ConvexHull
 from scipy import stats
 from scipy.spatial import distance
@@ -16,10 +19,8 @@ from sklearn.manifold import TSNE
 from sklearn.preprocessing import MinMaxScaler
 from sklearn import metrics
 from sklearn.preprocessing import normalize
-import matplotlib as mpl
 from statsmodels.sandbox.stats.multicomp import multipletests
-import matplotlib.gridspec as gridspec
-import glob
+
 np.random.seed(1)
 
 
