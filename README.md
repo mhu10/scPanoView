@@ -1,4 +1,4 @@
-                 # single-cell Panoramic View clustering (PanoView)
+## single-cell Panoramic View clustering (PanoView) ##
 A novel clustering algorithm for identifying cell subpopulations from single-cell RNAseq
 
 
