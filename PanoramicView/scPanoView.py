@@ -22,7 +22,7 @@ from sklearn.preprocessing import normalize
 from statsmodels.sandbox.stats.multicomp import multipletests
 
 import warnings
-warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
 np.random.seed(1)
 
 
