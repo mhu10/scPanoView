@@ -4,10 +4,8 @@ A novel clustering algorithm for identifying cell subpopulations from single-cel
 
 ![PanoView](https://github.com/mhu10/scPanoView/blob/master/PanoView.jpg)
 
-![OLMC](https://github.com/mhu10/scPanoView/blob/master/OLMC.gif)
-
 <p align="center">
-  <img width="600" height="600" src="https://github.com/mhu10/scPanoView/blob/master/OLMC.gif">
+  <img width="400" height="400" src="https://github.com/mhu10/scPanoView/blob/master/OLMC.gif">
 </p>
 
 ## installation ##
