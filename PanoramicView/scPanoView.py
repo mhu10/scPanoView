@@ -21,6 +21,8 @@ from sklearn import metrics
 from sklearn.preprocessing import normalize
 from statsmodels.sandbox.stats.multicomp import multipletests
 
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 np.random.seed(1)
 
 
