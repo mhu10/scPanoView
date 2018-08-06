@@ -626,6 +626,8 @@ class PanoView:
         self.cell_membership.loc[:,'L2Cluster'] =self.cell_membership.loc[:,'L2Cluster'].astype(int)
         self.cell_membership=self.cell_membership[['Cell_ID','L1Cluster','L2Cluster']]
         self.cell_membership.to_csv('Cell_Membership.csv')   
+        print("Cell_Membership.csv")
+        
         
         sns.set_style(style="white")
         plt.figure(figsize=(18,12))
@@ -716,7 +718,7 @@ class PanoView:
         ax3.spines['top'].set_visible(False)
         ax3.spines['right'].set_visible(False)
         plt.savefig('PanoView_output',dpi=300)
-
+        print("PanoView_output.png")
 
     def VisCluster(self,clevel,cnumber):     
         result=self.cell_membership
