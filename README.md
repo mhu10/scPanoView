@@ -3,7 +3,7 @@ A novel clustering algorithm for identifying cell subpopulations from single-cel
 
 
 ![PanoView](https://github.com/mhu10/scPanoView/blob/master/PanoView.jpg)
-                                        __+__
+                                        :heavy_plus_sign:
 <p align="center">
   <img width="400" height="400" src="https://github.com/mhu10/scPanoView/blob/master/OLMC.gif">
 </p>
