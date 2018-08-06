@@ -3,6 +3,9 @@ A novel clustering algorithm for identifying cell subpopulations from single-cel
 
 
 ![PanoView](https://github.com/mhu10/scPanoView/blob/master/PanoView.jpg)
+
+
+![OLMC](https://github.com/mhu10/scPanoView/blob/master/OLMC.gif)
 ## installation ##
 
 pip install git+https://github.com/mhu10/scPanoView.git#egg=scPanoView
