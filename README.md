@@ -11,6 +11,11 @@ A novel clustering algorithm for identifying cell subpopulations from single-cel
 </p>
 
 
-## installation ##
+## Installation ##
 
 pip install git+https://github.com/mhu10/scPanoView.git#egg=scPanoView
+
+
+## Manual ##
+
+PanoView_manual.pdf
