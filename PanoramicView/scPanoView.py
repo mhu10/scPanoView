@@ -668,7 +668,7 @@ class PanoView:
         
         for i in [i[0] for i in self.L1cluster_color]:
             
-            ax2.scatter(tcoord[result[result.L1Cluster ==i].index,0],tcoord[result[result.L1Cluster==i].index,1],color=cluster_colors[j],s=40,label=i)
+            ax2.scatter(tcoord[result[result.L1Cluster ==i].index,0],tcoord[result[result.L1Cluster==i].index,1],color=cluster_colors[j],s=50,label=i)
             j=j+1
         
         if len(np.unique(result.L1Cluster))>15:
@@ -697,7 +697,7 @@ class PanoView:
         for i in l2order:
             cluster_color2.append([i,cluster_colors[j]])
             clabel =  str(i) +" "+ str([i for i in Final_cluster[Final_cluster.cluster==i].index])
-            ax3.scatter(tcoord[result[result.L2Cluster ==i].index,0],tcoord[result[result.L2Cluster==i].index,1],color=cluster_colors[j],s=40,label=clabel)
+            ax3.scatter(tcoord[result[result.L2Cluster ==i].index,0],tcoord[result[result.L2Cluster==i].index,1],color=cluster_colors[j],s=50,label=clabel)
             heatcolor2.append([cluster_colors[j] for k in range(len(result[result.L2Cluster ==i].index))])
             cellgroup2.append(result[result.L2Cluster ==i].index)
             j=j+1
@@ -731,18 +731,18 @@ class PanoView:
         if clevel == 1:
             for i in np.unique(np.unique(result.L1Cluster)):
                 if i == cnumber:
-                    plt.scatter(tcoord[result[result.L1Cluster ==i].index,0],tcoord[result[result.L1Cluster==i].index,1],color='b',s=40,label=i)
+                    plt.scatter(tcoord[result[result.L1Cluster ==i].index,0],tcoord[result[result.L1Cluster==i].index,1],color='b',s=50,label=i)
                 else:
-                    plt.scatter(tcoord[result[result.L1Cluster ==i].index,0],tcoord[result[result.L1Cluster==i].index,1],color='gray',s=40,label=i)
+                    plt.scatter(tcoord[result[result.L1Cluster ==i].index,0],tcoord[result[result.L1Cluster==i].index,1],color='gray',s=50,label=i)
             
             plt.legend(loc='upper left', prop={'size':16}, bbox_to_anchor=(0.99,1),ncol=1,frameon=False)
         
         if clevel == 2:
             for i in np.unique(np.unique(result.L2Cluster)):
                 if i == cnumber:
-                    plt.scatter(tcoord[result[result.L2Cluster ==i].index,0],tcoord[result[result.L2Cluster==i].index,1],color='b',s=40,label=i)
+                    plt.scatter(tcoord[result[result.L2Cluster ==i].index,0],tcoord[result[result.L2Cluster==i].index,1],color='b',s=50,label=i)
                 else:
-                    plt.scatter(tcoord[result[result.L2Cluster ==i].index,0],tcoord[result[result.L2Cluster==i].index,1],color='gray',s=40,label=i)
+                    plt.scatter(tcoord[result[result.L2Cluster ==i].index,0],tcoord[result[result.L2Cluster==i].index,1],color='gray',s=50,label=i)
             
             plt.legend(loc='upper left', prop={'size':16}, bbox_to_anchor=(0.99,1),ncol=1,frameon=False)
             
@@ -757,7 +757,7 @@ class PanoView:
         cluster_colors = sns.color_palette("hls", len(cluster_id))
         j=0
         for i in cluster_id:
-            plt.scatter(tcoord[annotation[annotation ==i].index,0],tcoord[annotation[annotation==i].index,1],color=cluster_colors[j],s=40,label=i)
+            plt.scatter(tcoord[annotation[annotation ==i].index,0],tcoord[annotation[annotation==i].index,1],color=cluster_colors[j],s=50,label=i)
             j=j+1
         
         plt.legend(prop={'size':14}, bbox_to_anchor=(0.99,1),loc='upper left',frameon=False)
@@ -777,7 +777,7 @@ class PanoView:
             sns.set_style(style="white")
             plt.figure(figsize=(10, 10))
             plt.suptitle(markers[i],fontsize=36)
-            plt.scatter(self.tsne2d[:,0],self.tsne2d[:,1],c=markerdata.loc[:,markers[i]],s=40,cmap='BuPu',edgecolor='gray',alpha=0.5)
+            plt.scatter(self.tsne2d[:,0],self.tsne2d[:,1],c=markerdata.loc[:,markers[i]],s=50,cmap='BuPu',edgecolor='gray',alpha=0.3)
             plt.savefig('%s.png' % markers[i],dpi=200)
             
 
@@ -852,40 +852,4 @@ class PanoView:
         cbar=mpl.colorbar.ColorbarBase(axbar,cmap=cmap1, orientation='vertical',ticks=[])
         cbar.outline.set_visible(False)
         plt.savefig('HeatmapVGs',dpi=200)
-        
-        
-    def HeatMapGenes(self,clevel,genelist):
-        
-        if clevel ==1:
-           cellcolor =self.L1cell_color
-           cellorder=self.L1cell_dendro_order
-        elif clevel ==2:
-           cellcolor=self.L2cell_color 
-           cellorder=self.L2cell_dendro_order
-           
-        df = self.log_exp.loc[cellorder,genelist]
-        linkage_matrix = linkage(df.T,method='complete')
-        dn=dendrogram(linkage_matrix,show_leaf_counts=True,orientation='left',no_plot=True)
-        df = df.iloc[:,dn['leaves']]
-        
-        sns.set_style(style="white")                   
-        FigHeat = plt.figure(figsize=(10,10))
-        ax = FigHeat.add_subplot(111)
-        cax = ax.matshow(df,aspect='auto',cmap='BuPu')
-        cbr=plt.colorbar(cax,fraction=0.02, pad=0.05)
-        cbr.ax.set_title('$\log2$',fontsize=10)
-        cbr.outline.set_visible(False)
-        
-        ax.set_xticks(range(len(genelist)))
-        ax.set_xticklabels(df.columns,fontsize=12,rotation=90)
-        ax.set_yticks([])
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        ax.spines['bottom'].set_visible(False)
-        ax.spines['left'].set_visible(False)
-
-        axbar = FigHeat.add_axes([0.1, 0.11, 0.02, 0.770])   
-        cmap1 = mpl.colors.ListedColormap(cellcolor[::-1])
-        cbar=mpl.colorbar.ColorbarBase(axbar,cmap=cmap1, orientation='vertical',ticks=[])
-        cbar.outline.set_visible(False)
-        plt.savefig('HeatmapGenes',dpi=200)
+    
