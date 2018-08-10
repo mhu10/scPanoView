@@ -30,4 +30,4 @@ There should not be any error message popping out
 
 ## Manual ##
 
-Plese refer *PanoView_manual.pdf* to find the details of executing **PanoView** algorithm
+Plese refer *PanoViewManual.pdf* to find the details of executing **PanoView** algorithm
