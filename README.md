@@ -15,15 +15,15 @@ A novel clustering algorithm for identifying cell subpopulations from single-cel
 PanoView is a python module that uses other common python libraries such as numpy, scipy, pandas, scikit-learn, etc. Prior installing PanoView from Github repository, please make sure that Git is probably installed or go to https://git-scm.com/  for the installation of Git.
 To install PanoView at your local computer, open your command prompt and type the following
 
-
+'''
 pip install git+https://github.com/mhu10/scPanoView.git#egg=scPanoView
-
+'''
 
 It will install all the required python libraries for executing PanoView. To test the PanoView, open the python interpreter or your preferred IDE (Spyder, PyCharm, Jupyter, etc. ) and type the following
 
-
+'''
 from PanoramicView import scPanoView
-
+'''
 
 
 ## Manual ##
