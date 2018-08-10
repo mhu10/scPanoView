@@ -1,5 +1,8 @@
 # single-cell Panoramic View clustering (PanoView) #
+
 An iterative PCA-based method integrated with a novel density-based clustering, ordering local maximum by convex hull (OLMC) algorithm, to identify cell subpopulations for single-cell RNA-sequencing.
+
+
 
 
 ![PanoView](https://github.com/mhu10/scPanoView/blob/master/PanoView.jpg)
