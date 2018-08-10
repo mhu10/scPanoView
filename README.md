@@ -31,3 +31,4 @@ There should not be any error message popping out
 ## Manual ##
 
 Plese refer *PanoViewManual.pdf* to find the details of executing **PanoView** algorithm
+For the tutorial in the manual, please download *ExamplePollen.zip* and upzip it into your python working directory.
