@@ -28,6 +28,12 @@ from PanoramicView import scPanoView
 '''
 
 
+```
+git status
+git add
+git commit
+```
+
 ## Manual ##
 
 PanoView_manual.pdf
