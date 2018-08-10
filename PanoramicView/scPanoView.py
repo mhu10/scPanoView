@@ -382,8 +382,13 @@ class Panoite:
 
 class PanoView:
      
-    def __init__(self,filename):
+    def __init__(self,filename,annotation=None):
+        
         expression=pd.read_csv(filename+'.csv',index_col=0)      
+        
+        if annotation != None:
+            self.cell_anno = pd.read_csv(annotation+'.csv',index_col=0).values
+        
         self.raw_exp = expression
         self.log_exp =[]
         self.cell_id =[]
@@ -749,7 +754,8 @@ class PanoView:
         plt.savefig('cluster_%s.png' % cnumber,dpi=200)    
     
     
-    def VisClusterAnno(self,annotation):
+    def VisClusterAnno(self):
+        annotation = pd.DataFrame(self.cell_anno,columns=['anno'])
         cluster_id = np.unique(annotation)
         tcoord=self.tsne2d
         sns.set_style(style="white")
@@ -757,7 +763,7 @@ class PanoView:
         cluster_colors = sns.color_palette("hls", len(cluster_id))
         j=0
         for i in cluster_id:
-            plt.scatter(tcoord[annotation[annotation ==i].index,0],tcoord[annotation[annotation==i].index,1],color=cluster_colors[j],s=50,label=i)
+            plt.scatter(tcoord[annotation[annotation.anno ==i].index,0],tcoord[annotation[annotation.anno==i].index,1],color=cluster_colors[j],s=50,label=i)
             j=j+1
         
         plt.legend(prop={'size':14}, bbox_to_anchor=(0.99,1),loc='upper left',frameon=False)
@@ -852,4 +858,3 @@ class PanoView:
         cbar=mpl.colorbar.ColorbarBase(axbar,cmap=cmap1, orientation='vertical',ticks=[])
         cbar.outline.set_visible(False)
         plt.savefig('HeatmapVGs',dpi=200)
-    
