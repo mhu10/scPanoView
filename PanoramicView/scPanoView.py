@@ -453,7 +453,7 @@ class PanoView:
         print("RunPanoView-Done")
 
         
-    def OutputPanoView(self,clust_merge='default',metric_dis='default',fclust_dis= 'default', init='default',n_PCs='default'):    
+    def OutputPanoView(self,clust_merge='default',metric_dis='default',fclust_height= 'default', init='default',n_PCs='default'):    
 
         if clust_merge != 'default':
             clust_merge=clust_merge;
@@ -465,10 +465,10 @@ class PanoView:
         else:
             metric_dis = 1
         
-        if fclust_dis != 'default':
-            fclust_dis = fclust_dis
+        if fclust_height != 'default':
+            fclust_height = fclust_height
         else:
-            fclust_dis = 0.2
+            fclust_height = 0.2
             
         if init != 'default':
             init = 'random'
@@ -620,10 +620,10 @@ class PanoView:
         self.L1cell_dendro_order = [item for sublist in cellgroup for item in sublist]
         self.L1cluster_color=cluster_color
        
-        if fclust_dis != 0.2:
-            fclust_dis = fclust_dis;
+        if fclust_height != 0.2:
+            fclust_height = fclust_height;
         
-        assignments = fcluster(dn1_linkage_matrix_dn1,fclust_dis,'distance')
+        assignments = fcluster(dn1_linkage_matrix_dn1,fclust_height,'distance')
         Final_cluster = pd.DataFrame({'cluster':assignments})
         Final_cluster.index=sim_mat.index
         Final_cluster = Final_cluster.iloc[self.L1clust_dendro]
@@ -652,7 +652,7 @@ class PanoView:
         ax1.spines['top'].set_visible(False)
         ax1.spines['right'].set_visible(False)
         ax1.spines['bottom'].set_visible(False)
-        plt.axhline(y=fclust_dis, color='gray', linestyle='--',linewidth=1.25)
+        plt.axhline(y=fclust_height, color='gray', linestyle='--',linewidth=1.25)
         
         
     
@@ -816,7 +816,7 @@ class PanoView:
         self.vg_stat = DEGstat
         
     
-    def HeatMapVGs(self,pval,number,fd,clevel,genelist=None):
+    def HeatMapVGs(self,pval,number,fd,clevel,genes_add=None):
     
         if clevel ==1:
            cellcolor =self.L1cell_color
@@ -826,8 +826,8 @@ class PanoView:
            cellorder=self.L2cell_dendro_order
            
         topgene = self.vg_stat.query("Padj <@pval & log2FD >@fd").sort_values(by='Padj')[:number].gene.tolist()
-        if genelist != None:
-            topgene = topgene + genelist
+        if genes_add != None:
+            topgene = topgene + genes_add
         topgene = list(set(topgene))    
         df = self.log_exp.loc[cellorder,topgene]
         
@@ -857,4 +857,5 @@ class PanoView:
         cmap1 = mpl.colors.ListedColormap(cellcolor[::-1])
         cbar=mpl.colorbar.ColorbarBase(axbar,cmap=cmap1, orientation='vertical',ticks=[])
         cbar.outline.set_visible(False)
-        plt.savefig('HeatmapVGs',dpi=200)
+        plt.savefig('HeatmapVGs',dpi=200) 
+     
