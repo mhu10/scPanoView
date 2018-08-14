@@ -837,7 +837,6 @@ class PanoView:
         
         sns.set_style(style="white")                  
         FigHeat = plt.figure(figsize=(10,10))
-        plt.tight_layout()
         ax = FigHeat.add_subplot(111)
         cax = ax.matshow(df,aspect='auto',cmap='BuPu')
         cbr=plt.colorbar(cax,fraction=0.02, pad=0.05)
