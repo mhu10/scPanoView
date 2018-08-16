@@ -27,7 +27,9 @@ It will install all the required python libraries for executing **PanoView**. To
 ```
 from PanoramicView import scPanoView
 ```
-There should not be any error message popping out
+There should not be any error message popping out.
+
+Note: PanoView was implement and tested by python3. python2 would also work expcept the visualization of clustering result.
 
 
 
