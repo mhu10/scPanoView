@@ -29,7 +29,7 @@ from PanoramicView import scPanoView
 ```
 There should not be any error message popping out.
 
-Note: PanoView was implement and tested by python3. python2 also worked expcept the visualization of identified clusters.
+Note: PanoView was implement and tested by python3.6. python2 also worked expcept the visualization of identified clusters.
 
 
 
