@@ -10,5 +10,5 @@ setup(
     install_requires=['numpy>=1.13','pandas>=0.20','scipy>=0.19','matplotlib','seaborn>=0.8','scikit-learn>=0.19','statsmodels>=0.8'],
     url='https://github.com/mhu10/scPanoView',
     author='Ming-Wen Hu & Jiang Qian',
-    author_email='mhu10@jhmi.edu'
+    author_email='mhu10@jhmi.edu','jiang.qian@jhmi.edu'
 )
