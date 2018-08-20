@@ -17,7 +17,6 @@ from sklearn.decomposition import PCA
 from sklearn.neighbors import BallTree
 from sklearn.manifold import TSNE
 from sklearn.preprocessing import MinMaxScaler
-from sklearn import metrics
 from sklearn.preprocessing import normalize
 from statsmodels.sandbox.stats.multicomp import multipletests
 
@@ -31,11 +30,6 @@ def RunPCA(data,n):
     pca.fit(data)
     data_trans = pca.transform(data) ### new coordinates after pca transform
     return(data_trans,pca.explained_variance_ratio_)
-
-def ARI(truth,predict):
-    labels_true = truth
-    labels_pred = predict
-    return(metrics.adjusted_rand_score(labels_true, labels_pred))
     
 def jitter(a_series, noise_reduction=1000000):
     return (np.random.random(len(a_series))*a_series.std()/noise_reduction)-(a_series.std()/(2*noise_reduction))
@@ -186,7 +180,6 @@ class Panoite:
         maxcellibin=20
         maxbb = 20
         findvarg = HighVarGene(self.expression,zscore,lowgene)
-        
         if len(findvarg) > 0:
             self.genespace.append(findvarg)
             subdf = self.expression.loc[:,self.genespace[-1]]
@@ -637,7 +630,8 @@ class PanoView:
         
         
         sns.set_style(style="white")
-        plt.figure(figsize=(18,12))
+        fig = plt.figure(figsize=(18, 12))
+        #plt.figure(figsize=(18,12))
         gs = gridspec.GridSpec(2, 2)
         gs.update(wspace=0.05)
         
@@ -652,7 +646,7 @@ class PanoView:
         ax1.spines['top'].set_visible(False)
         ax1.spines['right'].set_visible(False)
         ax1.spines['bottom'].set_visible(False)
-        plt.axhline(y=fclust_height, color='gray', linestyle='--',linewidth=1.25)
+        plt.axhline(y=fclust_height, color='gray', linestyle='--',linewidth=1.35)
         
         
     
@@ -724,34 +718,56 @@ class PanoView:
         plt.yticks([])
         ax3.spines['top'].set_visible(False)
         ax3.spines['right'].set_visible(False)
-        plt.savefig('PanoView_output',dpi=300)
+        plt.savefig('PanoView_output',dpi=fig.dpi)
         print("PanoView_output.png")
 
+    
+    
+    
     def VisCluster(self,clevel,cnumber):     
         result=self.cell_membership
         tcoord=self.tsne2d
         
-        sns.set_style(style="white")
-        plt.figure(figsize=(10,10))
-        if clevel == 1:
-            for i in np.unique(np.unique(result.L1Cluster)):
-                if i == cnumber:
-                    plt.scatter(tcoord[result[result.L1Cluster ==i].index,0],tcoord[result[result.L1Cluster==i].index,1],color='b',s=50,label=i)
-                else:
-                    plt.scatter(tcoord[result[result.L1Cluster ==i].index,0],tcoord[result[result.L1Cluster==i].index,1],color='gray',s=50,label=i)
-            
-            plt.legend(loc='upper left', prop={'size':16}, bbox_to_anchor=(0.99,1),ncol=1,frameon=False)
+        clustnumber1 = np.unique(result.L1Cluster)
+        clustnumber2 = np.unique(result.L2Cluster)
         
-        if clevel == 2:
-            for i in np.unique(np.unique(result.L2Cluster)):
-                if i == cnumber:
-                    plt.scatter(tcoord[result[result.L2Cluster ==i].index,0],tcoord[result[result.L2Cluster==i].index,1],color='b',s=50,label=i)
-                else:
-                    plt.scatter(tcoord[result[result.L2Cluster ==i].index,0],tcoord[result[result.L2Cluster==i].index,1],color='gray',s=50,label=i)
+        
+        
+        sns.set_style(style="white")
+        fig = plt.figure(figsize=(10, 10))
+        
+        if clevel == 1:
             
-            plt.legend(loc='upper left', prop={'size':16}, bbox_to_anchor=(0.99,1),ncol=1,frameon=False)
+            if cnumber not in clustnumber1:
+                print('cnumber not found, please input a different cnumber')
+                
+            else:    
+                for i in clustnumber1:
+                    if i == cnumber:
+                        plt.scatter(tcoord[result[result.L1Cluster ==i].index,0],tcoord[result[result.L1Cluster==i].index,1],color='b',s=50,label=i)
+                    else:
+                        plt.scatter(tcoord[result[result.L1Cluster ==i].index,0],tcoord[result[result.L1Cluster==i].index,1],color='gray',s=50,label=i)
             
-        plt.savefig('cluster_%s.png' % cnumber,dpi=200)    
+                plt.legend(loc='upper left', prop={'size':16}, bbox_to_anchor=(0.99,1),ncol=1,frameon=False)
+        
+        elif clevel == 2:
+            
+            if cnumber not in clustnumber2:
+                print('cnumber not found, please input a different cnumber')
+                
+            else:
+                for i in clustnumber2:
+                    if i == cnumber:
+                        plt.scatter(tcoord[result[result.L2Cluster ==i].index,0],tcoord[result[result.L2Cluster==i].index,1],color='b',s=50,label=i)
+                    else:
+                        plt.scatter(tcoord[result[result.L2Cluster ==i].index,0],tcoord[result[result.L2Cluster==i].index,1],color='gray',s=50,label=i)
+            
+                plt.legend(loc='upper left', prop={'size':16}, bbox_to_anchor=(0.99,1),ncol=1,frameon=False)
+            
+        else:
+            print('clevel not found, please input a different clevel')
+        
+        plt.savefig('cluster_%s.png' % cnumber,dpi=fig.dpi)    
     
     
     def VisClusterAnno(self):
@@ -759,7 +775,8 @@ class PanoView:
         cluster_id = np.unique(annotation)
         tcoord=self.tsne2d
         sns.set_style(style="white")
-        plt.figure(figsize=(16,10))
+        fig = plt.figure(figsize=(16, 10))
+        #plt.figure(figsize=(16,10))
         cluster_colors = sns.color_palette("hls", len(cluster_id))
         j=0
         for i in cluster_id:
@@ -770,7 +787,7 @@ class PanoView:
         plt.grid()
         plt.xticks([])
         plt.yticks([])
-        plt.savefig('Clusters_Annotation',dpi=200)
+        plt.savefig('Clusters_Annotation',dpi=fig.dpi)
  
        
     def VisGeneExp(self,genes):
@@ -781,10 +798,11 @@ class PanoView:
         
         for i in range(len(markers)):
             sns.set_style(style="white")
-            plt.figure(figsize=(10, 10))
+            fig = plt.figure(figsize=(10, 10))
+            #plt.figure(figsize=(10, 10))
             plt.suptitle(markers[i],fontsize=36)
             plt.scatter(self.tsne2d[:,0],self.tsne2d[:,1],c=markerdata.loc[:,markers[i]],s=50,cmap='BuPu',edgecolor='gray',alpha=0.3)
-            plt.savefig('%s.png' % markers[i],dpi=200)
+            plt.savefig('%s.png' % markers[i],dpi=fig.dpi)
             
 
     def RunVGs(self,clevel):
@@ -835,8 +853,10 @@ class PanoView:
         dn=dendrogram(linkage_matrix,show_leaf_counts=True,orientation='left',no_plot=True)
         df = df.iloc[:,dn['leaves']]
         
-        sns.set_style(style="white")                  
-        FigHeat = plt.figure(figsize=(10,10))
+        sns.set_style(style="white")
+        FigHeat = plt.figure(figsize=(12, 12))                  
+        #FigHeat = plt.figure(figsize=(12,12))
+        
         ax = FigHeat.add_subplot(111)
         cax = ax.matshow(df,aspect='auto',cmap='BuPu')
         cbr=plt.colorbar(cax,fraction=0.02, pad=0.05)
@@ -856,5 +876,6 @@ class PanoView:
         cmap1 = mpl.colors.ListedColormap(cellcolor[::-1])
         cbar=mpl.colorbar.ColorbarBase(axbar,cmap=cmap1, orientation='vertical',ticks=[])
         cbar.outline.set_visible(False)
-        plt.savefig('HeatmapVGs',dpi=200) 
-     
+        plt.savefig('HeatmapVGs',dpi=FigHeat.dpi)
+        
+        
