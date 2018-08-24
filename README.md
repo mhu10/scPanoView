@@ -15,8 +15,7 @@
 
 
 ## Installation ##
-**PanoView** is a python module that uses other common python libraries such as *numpy*, *scipy*, *pandas*, *scikit-learn*, etc., to realize the proposed algorithm.
-Prior to installing **PanoView** from Github repository, please make sure that Git is properly installed or go to https://git-scm.com/  for the installation of Git.
+**PanoView** is a python module that uses other common python libraries such as *numpy*, *scipy*, *pandas*, *scikit-learn*, etc., to realize the proposed algorithm. Prior to installing **PanoView** from Github repository, please make sure that Git is properly installed or go to https://git-scm.com/  for the installation of Git.
 To install **PanoView** at your local computer, open your command prompt and type the following
 
 ```
