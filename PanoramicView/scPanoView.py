@@ -199,8 +199,6 @@ class Panoite:
         while opt_bins == True:
             bb = bb+1        
             if len(temppca) >CellMaximumn:
-                print('cell > 1000')
-                
                 localmax = Findlocalmax(Ordercell,temppca,maxcellibin)
                 opt_bins = False
             
@@ -280,7 +278,9 @@ class Panoite:
                 clust_pick_auto.remove(clust_keep_auto)
  
             nextdf = self.expression.loc[self.membership[self.membership.L1Cluster.isin(clust_pick_auto)].index,:]
-            print(str(round((1-(len(nextdf)/len(self.expression)))*100))+'%')
+            
+            print(str(round((1-(float(len(nextdf))/float(len(self.expression))))*100))+'%')
+            
             findvarg = HighVarGene(nextdf,zscore,lowgene)
             
             if len(findvarg) > 0:
@@ -443,7 +443,7 @@ class PanoView:
             finalcluster.append(result.membership[result.membership.L1Cluster ==i].index.values)        
         self.vargene= np.unique([gene for sublist in VarGene for gene in sublist])
         self.cell_clusters = finalcluster
-        print("RunPanoView-Done")
+        print("Clusters generated ")
 
         
     def OutputPanoView(self,clust_merge='default',metric_dis='default',fclust_height= 'default', init='default',n_PCs='default'):    
@@ -626,7 +626,8 @@ class PanoView:
         self.cell_membership.loc[:,'L2Cluster'] =self.cell_membership.loc[:,'L2Cluster'].astype(int)
         self.cell_membership=self.cell_membership[['Cell_ID','L1Cluster','L2Cluster']]
         self.cell_membership.to_csv('Cell_Membership.csv')   
-        print("Cell_Membership.csv")
+        
+        print("Output Cell_Membership.csv ")
         
         
         sns.set_style(style="white")
@@ -719,7 +720,7 @@ class PanoView:
         ax3.spines['top'].set_visible(False)
         ax3.spines['right'].set_visible(False)
         plt.savefig('PanoView_output',dpi=fig.dpi)
-        print("PanoView_output.png")
+        print("Output PanoView_output.png")
 
     
     
@@ -877,5 +878,4 @@ class PanoView:
         cbar=mpl.colorbar.ColorbarBase(axbar,cmap=cmap1, orientation='vertical',ticks=[])
         cbar.outline.set_visible(False)
         plt.savefig('HeatmapVGs',dpi=FigHeat.dpi)
-        
         
