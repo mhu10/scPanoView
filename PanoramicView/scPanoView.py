@@ -30,9 +30,40 @@ def RunPCA(data,n):
     pca.fit(data)
     data_trans = pca.transform(data) ### new coordinates after pca transform
     return(data_trans,pca.explained_variance_ratio_)
-    
+
+        
+def gini(data):
+    total=0
+    for i in data:
+        for j in data:
+            
+            total = total + abs(i-j)
+    result = total / (2*len(data)*len(data)*np.mean(data))
+    return(result)
+
+
+def Skl_scale(data):
+    newdata = data.copy()
+    for i in newdata.index:
+        scaler = MinMaxScaler(feature_range=(-2,2))
+        scaler = scaler.fit(newdata.loc[i,:].values.reshape(len(newdata.columns),1))
+        newdata.loc[i,:] = scaler.transform(newdata.loc[i,:].values.reshape(len(newdata.columns),1)).reshape(1,len(newdata.columns))
+    return(newdata)
+
+
+def OrderCell(data,radius):
+    tree = BallTree(data,leaf_size=2)    
+    Countnumber=[]
+    for point in range(len(data)): 
+        count = tree.query_radius(data[point].reshape(1,-1), r=radius, count_only = True) # counting the number of neighbors for each point
+        Countnumber.append(count) # storing number of neighbors      
+    CountnumberDf = pd.DataFrame(Countnumber,columns =['neighbors'])
+    return(CountnumberDf)
+
+
 def jitter(a_series, noise_reduction=1000000):
     return (np.random.random(len(a_series))*a_series.std()/noise_reduction)-(a_series.std()/(2*noise_reduction))
+
 
 def HighVarGene(data,z,meangene): 
     data=data.transpose()
@@ -67,36 +98,8 @@ def HighVarGene(data,z,meangene):
             return([])
         else:
             return(hvg)
-        
-def gini(data):
-    total=0
-    for i in data:
-        for j in data:
             
-            total = total + abs(i-j)
-    result = total / (2*len(data)*len(data)*np.mean(data))
-    return(result)
-
-
-def Skl_scale(data):
-    newdata = data.copy()
-    for i in newdata.index:
-        scaler = MinMaxScaler(feature_range=(-2,2))
-        scaler = scaler.fit(newdata.loc[i,:].values.reshape(len(newdata.columns),1))
-        newdata.loc[i,:] = scaler.transform(newdata.loc[i,:].values.reshape(len(newdata.columns),1)).reshape(1,len(newdata.columns))
-    return(newdata)
-
-
-def OrderCell(data,radius):
-    tree = BallTree(data,leaf_size=2)    
-    Countnumber=[]
-    for point in range(len(data)): 
-        count = tree.query_radius(data[point].reshape(1,-1), r=radius, count_only = True) # counting the number of neighbors for each point
-        Countnumber.append(count) # storing number of neighbors      
-    CountnumberDf = pd.DataFrame(Countnumber,columns =['neighbors'])
-    return(CountnumberDf)
-
-
+            
 def Distohull(xcoord,point,clusthull,clusthullvertices):
     disttovertices = [LA.norm(xcoord[i] - xcoord[point]) for i in clusthull.iloc[clusthullvertices,:].index ]
     if np.min(disttovertices) < np.mean(distance.pdist(xcoord[clusthull.iloc[clusthullvertices,:].index])):
@@ -279,7 +282,7 @@ class Panoite:
  
             nextdf = self.expression.loc[self.membership[self.membership.L1Cluster.isin(clust_pick_auto)].index,:]
             
-            print(str(round((1-(float(len(nextdf))/float(len(self.expression))))*100))+'%')
+            print('Progress: '+str(round((1-(float(len(nextdf))/float(len(self.expression))))*100))+'%')
             
             findvarg = HighVarGene(nextdf,zscore,lowgene)
             
@@ -647,7 +650,7 @@ class PanoView:
         ax1.spines['top'].set_visible(False)
         ax1.spines['right'].set_visible(False)
         ax1.spines['bottom'].set_visible(False)
-        plt.axhline(y=fclust_height, color='gray', linestyle='--',linewidth=1.35)
+        plt.axhline(y=fclust_height, color='grey', linestyle='--',linewidth=1.45)
         
         
     
@@ -678,7 +681,7 @@ class PanoView:
             
         plt.legend(prop={'size':14}, bbox_to_anchor=(0.95,1.05),ncol=ncol,loc='upper left',frameon=False)
         plt.grid()
-        plt.title('L1 Cluster',fontsize=14)
+        plt.title('L1 Cluster',fontsize=16)
         plt.xticks([])
         plt.yticks([])
         ax2.spines['top'].set_visible(False)
@@ -714,7 +717,7 @@ class PanoView:
             
         plt.legend(prop={'size':14}, bbox_to_anchor=(0.95,1.05),ncol=ncol,loc='upper left',frameon=False)
         plt.grid()
-        plt.title('L2 Cluster (---)',fontsize=14)
+        plt.title('L2 Cluster (---)',fontsize=16, color ='grey')
         plt.xticks([])
         plt.yticks([])
         ax3.spines['top'].set_visible(False)
@@ -731,7 +734,6 @@ class PanoView:
         
         clustnumber1 = np.unique(result.L1Cluster)
         clustnumber2 = np.unique(result.L2Cluster)
-        
         
         
         sns.set_style(style="white")
@@ -777,7 +779,6 @@ class PanoView:
         tcoord=self.tsne2d
         sns.set_style(style="white")
         fig = plt.figure(figsize=(16, 10))
-        #plt.figure(figsize=(16,10))
         cluster_colors = sns.color_palette("hls", len(cluster_id))
         j=0
         for i in cluster_id:
@@ -800,7 +801,6 @@ class PanoView:
         for i in range(len(markers)):
             sns.set_style(style="white")
             fig = plt.figure(figsize=(10, 10))
-            #plt.figure(figsize=(10, 10))
             plt.suptitle(markers[i],fontsize=36)
             plt.scatter(self.tsne2d[:,0],self.tsne2d[:,1],c=markerdata.loc[:,markers[i]],s=50,cmap='BuPu',edgecolor='gray',alpha=0.3)
             plt.savefig('%s.png' % markers[i],dpi=fig.dpi)
@@ -856,8 +856,7 @@ class PanoView:
         
         sns.set_style(style="white")
         FigHeat = plt.figure(figsize=(12, 12))                  
-        #FigHeat = plt.figure(figsize=(12,12))
-        
+          
         ax = FigHeat.add_subplot(111)
         cax = ax.matshow(df,aspect='auto',cmap='BuPu')
         cbr=plt.colorbar(cax,fraction=0.02, pad=0.05)
@@ -878,4 +877,3 @@ class PanoView:
         cbar=mpl.colorbar.ColorbarBase(axbar,cmap=cmap1, orientation='vertical',ticks=[])
         cbar.outline.set_visible(False)
         plt.savefig('HeatmapVGs',dpi=FigHeat.dpi)
-        
