@@ -33,7 +33,7 @@ Note: PanoView was implement and tested by python3.6. python2 also worked expcep
 
 
 
-## Manual ##
+## Tutorial ##
 
 Plese refer *"PanoViewManual.pdf"* to find the details of executing **PanoView** algorithm.
 
