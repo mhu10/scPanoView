@@ -37,4 +37,4 @@ Note: PanoView was implement and tested by python3.6. python2 also worked expcep
 
 Plese refer to the manuaul ( *"PanoViewManual.pdf"* ) for details of executing **PanoView** algorithm in python.
 
-For running tutorial in the manual, please download *"ExamplePollen.zip"* and upzip it into your python working directory.
+For running tutorial in the manual, please download the example dataset (*"ExamplePollen.zip"* ) and upzip it into your python working directory.
