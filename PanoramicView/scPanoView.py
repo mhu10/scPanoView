@@ -402,7 +402,7 @@ class PanoView:
         self.L2cluster_color=[]
         
         
-    def RunPanoView(self,Normal=True,Log2=True,GeneLow='default',Zscore='default'):
+    def RunSearching(self,Normal=True,Log2=True,GeneLow='default',Zscore='default'):
         
         self.raw_exp.index.astype(str)
         self.raw_exp.index = self.raw_exp.index.where(~self.raw_exp.index.duplicated(), self.raw_exp.index + '_dp')        
@@ -449,7 +449,7 @@ class PanoView:
         print("Clusters generated ")
 
         
-    def OutputPanoView(self,clust_merge='default',metric_dis='default',fclust_height= 'default', init='default',n_PCs='default'):    
+    def OutputResult(self,clust_merge='default',metric_dis='default',fclust_height= 'default', init='default',n_PCs='default'):    
 
         if clust_merge != 'default':
             clust_merge=clust_merge;
@@ -877,3 +877,5 @@ class PanoView:
         cbar=mpl.colorbar.ColorbarBase(axbar,cmap=cmap1, orientation='vertical',ticks=[])
         cbar.outline.set_visible(False)
         plt.savefig('HeatmapVGs',dpi=FigHeat.dpi)
+        
+        
