@@ -179,8 +179,8 @@ class Panoite:
     def generate_clusters(self,lowgene,zscore):    
         CellMaximumn=1000
         ginicutoff = 0.05
-        Rneighbor= 20
-        maxcellibin=20
+        Bc= 20
+        Bg=20
         maxbb = 20
         findvarg = HighVarGene(self.expression,zscore,lowgene)
         if len(findvarg) > 0:
@@ -193,7 +193,7 @@ class Panoite:
      
         subdf=Skl_scale(subdf)
         pcaspace = RunPCA(subdf.values.astype(float),3)[0]
-        Radius = np.histogram(distance.pdist(pcaspace),Rneighbor)[1][1]
+        Radius = np.histogram(distance.pdist(pcaspace),Bc)[1][1]
         temppca = pcaspace    
         Ordercell = OrderCell(temppca,Radius)
         bb=0
@@ -202,7 +202,7 @@ class Panoite:
         while opt_bins == True:
             bb = bb+1        
             if len(temppca) >CellMaximumn:
-                localmax = Findlocalmax(Ordercell,temppca,maxcellibin)
+                localmax = Findlocalmax(Ordercell,temppca,Bg)
                 opt_bins = False
             
             else:
@@ -296,7 +296,7 @@ class Panoite:
      
             subdf=Skl_scale(subdf)
             pcaspace = RunPCA(subdf.values.astype(float),3)[0]
-            Radius = np.histogram(distance.pdist(pcaspace),Rneighbor)[1][1]          
+            Radius = np.histogram(distance.pdist(pcaspace),Bc)[1][1]          
             temppca = pcaspace    
             Ordercell = OrderCell(temppca,Radius)
             bb=0
@@ -306,7 +306,7 @@ class Panoite:
                 bb = bb+1
                 
                 if len(temppca) >CellMaximumn:
-                    localmax = Findlocalmax(Ordercell,temppca,maxcellibin)
+                    localmax = Findlocalmax(Ordercell,temppca,Bg)
                     opt_bins = False                         
                 else:
                     localmax = Findlocalmax(Ordercell,temppca,5*bb)
@@ -405,7 +405,10 @@ class PanoView:
     def RunSearching(self,Normal=True,Log2=True,GeneLow='default',Zscore='default'):
         
         self.raw_exp.index.astype(str)
-        self.raw_exp.index = self.raw_exp.index.where(~self.raw_exp.index.duplicated(), self.raw_exp.index + '_dp')        
+        generepeat = len(self.raw_exp.index) != len(np.unique(self.raw_exp.index))
+        while generepeat == True:
+            self.raw_exp.index = self.raw_exp.index.where(~self.raw_exp.index.duplicated(), self.raw_exp.index + '_dp')
+            generepeat = len(self.raw_exp.index) != len(np.unique(self.raw_exp.index))        
         
         if Normal == False:
             if Log2 == False:
