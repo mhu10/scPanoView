@@ -282,7 +282,7 @@ class Panoite:
  
             nextdf = self.expression.loc[self.membership[self.membership.L1Cluster.isin(clust_pick_auto)].index,:]
             
-            print('Progress: '+str(round((1-(float(len(nextdf))/float(len(self.expression))))*100))+'%')
+            print('Percentage of cells being analyzed: '+str(round((1-(float(len(nextdf))/float(len(self.expression))))*100))+'%')
             
             findvarg = HighVarGene(nextdf,zscore,lowgene)
             
