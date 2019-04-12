@@ -682,7 +682,7 @@ class PanoView:
         else:
             ncol=1
             
-        plt.legend(prop={'size':14}, bbox_to_anchor=(0.95,1.05),ncol=ncol,loc='upper left',frameon=False)
+        plt.legend(prop={'size':11}, bbox_to_anchor=(0.95,1.05),ncol=ncol,loc='upper left',frameon=False)
         plt.grid()
         plt.title('L1 Cluster',fontsize=16)
         plt.xticks([])
@@ -718,7 +718,7 @@ class PanoView:
         else:
             ncol=1
             
-        plt.legend(prop={'size':14}, bbox_to_anchor=(0.95,1.05),ncol=ncol,loc='upper left',frameon=False)
+        plt.legend(prop={'size':11}, bbox_to_anchor=(0.95,1.05),ncol=ncol,loc='upper left',frameon=False)
         plt.grid()
         plt.title('L2 Cluster (---)',fontsize=16, color ='grey')
         plt.xticks([])
