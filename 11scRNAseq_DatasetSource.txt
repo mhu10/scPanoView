@@ -1,0 +1,48 @@
+###################################################################################################
+The following is the download information for 11 scRNA-seq datasets used in the PanoView manuscript.
+You could find expression values and original cluster assignment from these sources.
+###################################################################################################
+
+### Yan et al. ###
+1. Gene Expression Omnibus https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE36552
+2. scRNA-Seq Datasets at Hemberg Group/Sanger Institude  https://hemberg-lab.github.io/scRNA.seq.datasets/
+
+### Goolam et al. ###
+1. ArryaExpress at EMBL-EBI https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-3321/
+2. scRNA-Seq Datasets at Hemberg Group/Sanger Institude https://hemberg-lab.github.io/scRNA.seq.datasets/mouse/edev/
+
+### Deng et al. ###
+1. Gene Expression Omnibus https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE45719
+2. ArryaExpress at EMBL-EBI https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-45719/
+3. scRNA-Seq Datasets at Hemberg Group/Sanger Institude https://hemberg-lab.github.io/scRNA.seq.datasets/mouse/edev/
+
+### Pollen et al. ###
+1. scRNA-Seq Datasets at Hemberg Group/Sanger Institude https://hemberg-lab.github.io/scRNA.seq.datasets/human/tissues/
+
+### Patel et al. ###
+1. GiniClust at github https://github.com/lanjiangboston/GiniClust
+2. Gene Expression Omnibus https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE57872
+
+### Usoskin et al. ###
+1. Linnarsson Lab http://linnarssonlab.org/drg/
+2. Gene Expression Omnibus https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE59739
+
+### Villani et al. ###
+1. Single Cell PORTAL at Broad Institude https://singlecell.broadinstitute.org/single_cell
+2. Gene Expression Omnibus https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE94820
+
+### Zeisel et al. ###
+1. Gene Expression Omnibus https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE60361
+2. Linnarsson Lab http://linnarssonlab.org/cortex/
+
+### Tirosh et al. ###
+1. Single Cell PORTAL at Broad Institude https://singlecell.broadinstitute.org/single_cell
+2. Gene Expression Omnibus https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE72056
+
+### Baron et al. ###
+1. Gene Expression Omnibus https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE84133
+2. scRNA-Seq Datasets at Hemberg Group/Sanger Institude https://hemberg-lab.github.io/scRNA.seq.datasets/human/pancreas/
+
+### Campbell et al. ###
+1. Gene Expression Omnibus https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE93374
+2. Single Cell PORTAL at Broad Institude https://singlecell.broadinstitute.org/single_cell
